@@ -1,12 +1,22 @@
 import React, { useState } from 'react';
 import {View, Text, StyleSheet, TextInput,TouchableOpacity, Image} from 'react-native';
 import Logo from '../../assets/logo.svg'
+import AsyncStorage from '@react-native-async-storage/async-storage';
+
 const Login = () => {
     // Hooks
     const [email, setEmail] = useState('');
     const [senha, setSenha] = useState('');
 
-    const Logar = () =>{
+    
+const salvarToken = async (value) => {
+    try {
+      await AsyncStorage.setItem('@jwt_nyous', value)
+    } catch (e) {
+      // saving error
+    }
+}
+    const Logar = ({navigation}) =>{
         const corpo = {
             email : email,
             senha : senha
@@ -15,8 +25,20 @@ const Login = () => {
             method: 'POST',
             headers: {
                 'Content-Type' : 'application/json'
-            }
+            },
+            body: JSON.stringify(corpo)
         })        
+        .then(response => response())
+        .then(data => {
+            if(data.status != 404){
+                alert('Login efetuado');
+                salvarToken(data.token);
+                navigation.push('Autenticado');
+            }else{
+                alert('Dados inválidos')
+            }
+        })
+        .catch(() => alert('Falha na requisição, tente novamente'))
         
     }
 

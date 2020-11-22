@@ -1,6 +1,8 @@
 import { StatusBar } from 'expo-status-bar';
 import React from 'react';
 import { StyleSheet, Text, View } from 'react-native';
+//storage
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 // páginas
 import Home from './pages/Home'
@@ -14,15 +16,25 @@ import { NavigationContainer } from '@react-navigation/native';
 const Drawer = createDrawerNavigator();
 const Stack  = createStackNavigator();
 
+
+const Logout = ({navigation}) =>{
+  return(
+    <View>
+      <Text>Deseja sair do app?</Text>
+      <Button title="Sair" onPress={() => {
+        AsyncStorage.removeItem('@jwt_nyous');
+        navigation.push('Login');
+      }} />
+    </View>
+  )
+}
+
 const Autenticado = () =>{
   return(
-    <NavigationContainer>
       <Drawer.Navigator>
         <Drawer.Screen name='Home' component={Home}  />
         <Drawer.Screen name='Logout' component={Logout}  />
-
       </Drawer.Navigator>
-    </NavigationContainer>
   )
 }
 
